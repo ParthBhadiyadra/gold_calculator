@@ -8,7 +8,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>Gold Price Calculator</h1>
+    <div class="store-header">Milan Jewellers</div>
+    <h1>Gold Price Calculator</h1>
         <form id="goldForm">
             <div class="input-group">
                 <label for="goldRate">Gold Rate (24K, per 10g):</label>
@@ -25,8 +26,10 @@
                     <option value="old">Old Gold</option>
                 </select>
             </div>
-            <button type="button" id="configBtn">Configure Labler Charges</button>
-            <button type="submit">Calculate</button>
+            <div class="btn-group">
+                <button type="button" id="configBtn">Configure Labler Charges</button>
+                <button type="submit">Calculate</button>
+            </div>
         </form>
         <div id="results"></div>
     </div>

@@ -8,8 +8,9 @@ const defaultCharges = {
     '92b': 1200 // 92% (No GST)
 };
 
+const MAKE_KEY = 'goldMakeName';
+
 function getCharges() {
-    // Try to get from localStorage
     let charges = localStorage.getItem('goldLablerCharges');
     if (charges) {
         try {
@@ -36,8 +37,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const configModal = document.getElementById('configModal');
     const closeModal = document.querySelector('.close');
     const configForm = document.getElementById('configForm');
+    const makeInput = document.getElementById('make');
+    const configMakeInput = document.getElementById('configMake');
 
-    // Load charges to config modal
     function loadChargesToModal() {
         const charges = getCharges();
         document.getElementById('charge92').value = charges['92'];
@@ -45,9 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('charge905').value = charges['90.5'];
         document.getElementById('charge91').value = charges['91'];
         document.getElementById('charge92b').value = charges['92b'];
+    // load make
+    const savedMake = localStorage.getItem(MAKE_KEY) || 'Milan Jewellers';
+    configMakeInput.value = savedMake;
+    if (makeInput) makeInput.value = savedMake;
     }
 
-    // Modal open/close
     configBtn.onclick = function() {
         loadChargesToModal();
         configModal.style.display = 'block';
@@ -59,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.target == configModal) configModal.style.display = 'none';
     };
 
-    // Save config
     configForm.onsubmit = function(e) {
         e.preventDefault();
         const charges = {
@@ -69,14 +73,18 @@ document.addEventListener('DOMContentLoaded', function() {
             '91': Number(document.getElementById('charge91').value),
             '92b': Number(document.getElementById('charge92b').value)
         };
+    const makeVal = String(document.getElementById('configMake').value || 'Milan Jewellers');
+    localStorage.setItem(MAKE_KEY, makeVal);
+    if (makeInput) makeInput.value = makeVal;
         saveCharges(charges);
         configModal.style.display = 'none';
         alert('Labler charges saved!');
     };
 
-    // Calculation logic
     goldForm.onsubmit = function(e) {
         e.preventDefault();
+    // save make from form input
+    if (makeInput) localStorage.setItem(MAKE_KEY, String(makeInput.value || 'Milan Jewellers'));
         const goldRate = Number(document.getElementById('goldRate').value);
         const weight = Number(document.getElementById('weight').value);
         const goldType = document.getElementById('goldType').value;
@@ -89,8 +97,12 @@ document.addEventListener('DOMContentLoaded', function() {
             { label: '91%', percent: 0.91, chargeKey: '91' },
             { label: '92% (No GST)', percent: 0.92, chargeKey: '92b', noGST: true }
         ];
-        let html = '<table style="width:100%;border-collapse:collapse;">';
-        html += '<tr><th style="border-bottom:1px solid #ccc;">Type</th><th style="border-bottom:1px solid #ccc;">Gold Value</th><th style="border-bottom:1px solid #ccc;">Labler Charge</th><th style="border-bottom:1px solid #ccc;">GST</th><th style="border-bottom:1px solid #ccc;">Total</th></tr>';
+
+    const makeName = localStorage.getItem(MAKE_KEY) || 'Milan Jewellers';
+    let html = `<div class="results-header"> <strong>Make:</strong> ${makeName}</div>`;
+    html += '<div class="results-wrapper"><table>';
+    html += '<tr><th>Type</th><th>Gold Value</th><th>Labler Charge</th><th>GST</th><th>Total</th></tr>';
+
         percentList.forEach(row => {
             let rate = baseRate;
             let percent = row.percent;
@@ -99,13 +111,14 @@ document.addEventListener('DOMContentLoaded', function() {
             let gst = 0;
             let goldValue = 0;
             let total = 0;
+
             if (goldType === 'old') {
-                // Old gold: -2000 from 24K rate, and use 90%
                 rate = baseRate - 2000;
                 percent = 0.90;
                 label = '90% (Old Gold)';
-                charge = charges['90.5'] || 0; // Use 90.5% charge for old gold
+                charge = charges['90.5'] || 0;
             }
+
             goldValue = (rate * percent * weight) / 10;
             let lablerCharge = (charge * weight) / 10;
             total = goldValue + lablerCharge;
@@ -113,9 +126,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 gst = total * 0.03;
                 total += gst;
             }
-            html += `<tr><td>${label}</td><td>${formatINR(goldValue)}</td><td>${formatINR(lablerCharge)}</td><td>${row.noGST ? '-' : formatINR(gst)}</td><td>${formatINR(total)}</td></tr>`;
+
+            html += `<tr>
+                        <td>${label}</td>
+                        <td>${formatINR(goldValue)}</td>
+                        <td>${formatINR(lablerCharge)}</td>
+                        <td>${row.noGST ? '-' : formatINR(gst)}</td>
+                        <td>${formatINR(total)}</td>
+                    </tr>`;
         });
-        html += '</table>';
+
+        html += '</table></div>';
         resultsDiv.innerHTML = html;
     };
 });
