@@ -3,68 +3,654 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Price Calculator</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Milan Jewellers - Gold Price Calculator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100px) translateY(-100px); }
+            50% { transform: translateX(100px) translateY(100px); }
+        }
+
+        .logo {
+            font-size: 3rem;
+            color: #8B4513;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .store-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #8B4513;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .tagline {
+            font-size: 1rem;
+            color: #8B4513;
+            opacity: 0.8;
+            position: relative;
+            z-index: 2;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            background: #fff;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #FFD700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #8B4513;
+            box-shadow: 0 8px 16px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        #results {
+            margin-top: 30px;
+        }
+
+        .results-wrapper {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #8B4513;
+            padding: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        td {
+            padding: 18px 20px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+            font-weight: 500;
+        }
+
+        tr:nth-child(even) {
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.05), rgba(255, 165, 0, 0.05));
+        }
+
+        tr:hover {
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal h2 {
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .price-highlight {
+            font-weight: 700;
+            color: #2E8B57;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+            }
+
+            .store-name {
+                font-size: 1.5rem;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            th, td {
+                padding: 12px 8px;
+                font-size: 0.9rem;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                padding: 20px;
+                max-width: 90%;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #FFD700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-    <div class="store-header">Milan Jewellers</div>
-    <h1>Gold Price Calculator</h1>
-        <form id="goldForm">
-            <div class="input-group">
-                <label for="goldRate">Gold Rate (24K, per 10g):</label>
-                <input type="number" id="goldRate" value="60000" min="0" required>
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-gem"></i>
             </div>
-            <div class="input-group">
-                <label for="weight">Weight (grams):</label>
-                <input type="number" id="weight" value="10" min="1" required>
-            </div>
-            <div class="input-group">
-                <label>Gold Type:</label>
-                <select id="goldType">
-                    <option value="new">New Gold</option>
-                    <option value="old">Old Gold</option>
-                </select>
-            </div>
-            <div class="btn-group">
-                <button type="button" id="configBtn">Configure Labler Charges</button>
-                <button type="submit">Calculate</button>
-            </div>
-        </form>
-        <div id="results"></div>
+            <div class="store-name">Milan Jewellers</div>
+            <div class="tagline">Premium Gold & Jewelry Collection</div>
+        </div>
+
+        <div class="content">
+            <h1><i class="fas fa-calculator"></i> Gold Price Calculator</h1>
+            
+            <form id="goldForm">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="goldRate">
+                            <i class="fas fa-coins"></i> Gold Rate (24K, per 10g)
+                        </label>
+                        <input type="number" id="goldRate" value="113000" min="0" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="weight">
+                            <i class="fas fa-weight"></i> Weight (grams)
+                        </label>
+                        <input type="number" id="weight" value="10" min="1" step="0.1" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="goldType">
+                            <i class="fas fa-star"></i> Gold Type
+                        </label>
+                        <select id="goldType">
+                            <option value="new">New Gold</option>
+                            <option value="old">Old Gold</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="button" id="configBtn" class="btn-secondary">
+                        <i class="fas fa-cog"></i> Configure Labour Charges
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-calculator"></i> Calculate Price
+                    </button>
+                </div>
+            </form>
+            
+            <div id="results"></div>
+        </div>
     </div>
 
     <!-- Configuration Modal -->
     <div id="configModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Configure Labler Charges (per 10g)</h2>
+            <span class="close"><i class="fas fa-times"></i></span>
+            <h2><i class="fas fa-tools"></i> Configure Labour Charges</h2>
             <form id="configForm">
-                <div class="input-group">
-                    <label>92%:</label>
-                    <input type="number" id="charge92" value="1200" min="0">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="charge92">92% (per gram):</label>
+                        <input type="number" id="charge92" value="1200" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="charge89">89% (per gram):</label>
+                        <input type="number" id="charge89" value="1200" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="charge905">90.5% (per gram):</label>
+                        <input type="number" id="charge905" value="1200" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="charge91">91% (per gram):</label>
+                        <input type="number" id="charge91" value="1200" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="charge92b">92% (No GST, per gram):</label>
+                        <input type="number" id="charge92b" value="1200" min="0">
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label>89%:</label>
-                    <input type="number" id="charge89" value="1200" min="0">
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
                 </div>
-                <div class="input-group">
-                    <label>90.5%:</label>
-                    <input type="number" id="charge905" value="1200" min="0">
-                </div>
-                <div class="input-group">
-                    <label>91%:</label>
-                    <input type="number" id="charge91" value="1200" min="0">
-                </div>
-                <div class="input-group">
-                    <label>92% (No GST):</label>
-                    <input type="number" id="charge92b" value="1200" min="0">
-                </div>
-                <button type="submit">Save</button>
             </form>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Gold Price Calculator JS with modern enhancements
+        const defaultCharges = {
+            '92': 1200,
+            '89': 1200,
+            '90.5': 1200,
+            '91': 1200,
+            '92b': 1200 // 92% (No GST)
+        };
+
+        // Store data in memory instead of localStorage for Claude.ai compatibility
+        let charges = {...defaultCharges};
+
+        function getCharges() {
+            return charges;
+        }
+
+        function saveCharges(newCharges) {
+            charges = {...newCharges};
+        }
+
+        function formatINR(num) {
+            if (Number.isInteger(num)) {
+                return '₹' + num.toLocaleString('en-IN', {maximumFractionDigits: 0});
+            }
+            return '₹' + num.toLocaleString('en-IN', {maximumFractionDigits: 2});
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+                ${type === 'success' ? 'background: #2E8B57;' : 'background: #DC143C;'}
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in forwards';
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const goldForm = document.getElementById('goldForm');
+            const resultsDiv = document.getElementById('results');
+            const configBtn = document.getElementById('configBtn');
+            const configModal = document.getElementById('configModal');
+            const closeModal = document.querySelector('.close');
+            const configForm = document.getElementById('configForm');
+
+            // Add loading animation styles
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+
+            function loadChargesToModal() {
+                const currentCharges = getCharges();
+                document.getElementById('charge92').value = currentCharges['92'];
+                document.getElementById('charge89').value = currentCharges['89'];
+                document.getElementById('charge905').value = currentCharges['90.5'];
+                document.getElementById('charge91').value = currentCharges['91'];
+                document.getElementById('charge92b').value = currentCharges['92b'];
+            }
+
+            configBtn.onclick = function() {
+                loadChargesToModal();
+                configModal.style.display = 'block';
+            };
+
+            closeModal.onclick = function() {
+                configModal.style.display = 'none';
+            };
+
+            window.onclick = function(event) {
+                if (event.target == configModal) {
+                    configModal.style.display = 'none';
+                }
+            };
+
+            configForm.onsubmit = function(e) {
+                e.preventDefault();
+                const newCharges = {
+                    '92': Number(document.getElementById('charge92').value),
+                    '89': Number(document.getElementById('charge89').value),
+                    '90.5': Number(document.getElementById('charge905').value),
+                    '91': Number(document.getElementById('charge91').value),
+                    '92b': Number(document.getElementById('charge92b').value)
+                };
+                saveCharges(newCharges);
+                configModal.style.display = 'none';
+                showNotification('Labour charges saved successfully!');
+            };
+
+            goldForm.onsubmit = function(e) {
+                e.preventDefault();
+                
+                // Add loading effect
+                const submitBtn = goldForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculating...';
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    const goldRate = Number(document.getElementById('goldRate').value);
+                    const weight = Number(document.getElementById('weight').value);
+                    const goldType = document.getElementById('goldType').value;
+                    const currentCharges = getCharges();
+                    
+                    let baseRate = goldRate;
+                    let percentList = [
+                        { label: '92% Gold', percent: 0.92, chargeKey: '92', icon: 'fas fa-star' },
+                        { label: '91% Gold', percent: 0.91, chargeKey: '91', icon: 'fas fa-star' },
+                        { label: '90.5% Gold', percent: 0.905, chargeKey: '90.5', icon: 'fas fa-star-half-alt' },
+                        { label: '89% Gold', percent: 0.89, chargeKey: '89', icon: 'fas fa-star-half-alt' },
+                        { label: '92% Gold (No GST)', percent: 0.92, chargeKey: '92b', noGST: true, icon: 'fas fa-certificate' }
+                    ];
+
+                    let html = `
+                        <div class="results-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-tag"></i> Type</th>
+                                        <th><i class="fas fa-coins"></i> Gold Value</th>
+                                        <th><i class="fas fa-tools"></i> Labour Charge</th>
+                                        <th><i class="fas fa-receipt"></i> GST (3%)</th>
+                                        <th><i class="fas fa-calculator"></i> Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+
+                    percentList.forEach(row => {
+                        let rate = baseRate;
+                        let percent = row.percent;
+                        let label = row.label;
+                        let charge = currentCharges[row.chargeKey] || 0;
+                        let gst = 0;
+                        let goldValue = 0;
+                        let total = 0;
+
+                        if (goldType === 'old') {
+                            rate = baseRate - 2000;
+                            percent = 0.90;
+                            label = '<i class="fas fa-recycle"></i> 90% (Old Gold)';
+                            charge = currentCharges['90.5'] || 0;
+                        } else {
+                            label = `<i class="${row.icon}"></i> ${label}`;
+                        }
+
+                        goldValue = (rate * percent * weight) / 10;
+                        let labourCharge = charge * weight;
+                        total = goldValue + labourCharge;
+                        
+                        if (!row.noGST) {
+                            gst = total * 0.03;
+                            total += gst;
+                        }
+
+                        const roundedTotal = Math.round(total);
+
+                        html += `
+                            <tr>
+                                <td>${label}</td>
+                                <td>${formatINR(goldValue)}</td>
+                                <td>${formatINR(labourCharge)}</td>
+                                <td>${row.noGST ? '<span style="color: #999;">No GST</span>' : formatINR(gst)}</td>
+                                <td class="price-highlight">${formatINR(roundedTotal)}</td>
+                            </tr>
+                        `;
+                    });
+
+                    html += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                    
+                    resultsDiv.innerHTML = html;
+                    
+                    // Restore button
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // Smooth scroll to results
+                    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    
+                }, 500); // Small delay for better UX
+            };
+        });
+    </script>
 </body>
 </html>
