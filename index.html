@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milan Jewellers - Gold Price Calculator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-gem"></i>
+            </div>
+            <div class="store-name">Milan Jewellers</div>
+            <div class="tagline">Premium Gold & Jewelry Collection</div>
+            <button onclick="logout()" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); border: none; color: #8B4513; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; backdrop-filter: blur(10px);">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+
+        <div class="content">
+            <h1><i class="fas fa-calculator"></i> Gold Price Calculator</h1>
+            
+            <form id="goldForm">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="goldRate">
+                            <i class="fas fa-coins"></i> Gold Rate (24K, per 10g)
+                        </label>
+                        <input type="number" id="goldRate" value="113000" min="0" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="weight">
+                            <i class="fas fa-weight"></i> Weight (grams)
+                        </label>
+                        <input type="number" id="weight" value="10" min="1" step="0.1" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="goldType">
+                            <i class="fas fa-star"></i> Gold Type
+                        </label>
+                        <select id="goldType">
+                            <option value="new">New Gold</option>
+                            <option value="old">Old Gold</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="button" id="configBtn" class="btn-secondary">
+                        <i class="fas fa-cog"></i> Configure Labour Charges
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-calculator"></i> Calculate Price
+                    </button>
+                </div>
+            </form>
+            
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <!-- Configuration Modal -->
+    <div id="configModal" class="modal">
+        <div class="modal-content">
+            <span class="close"><i class="fas fa-times"></i></span>
+            <h2><i class="fas fa-tools"></i> Configure Labour Charges</h2>
+            <form id="configForm">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="charge92">92% (per gram):</label>
+                        <input type="number" id="charge92" value="1200" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="charge89">89% (per gram):</label>
+                        <input type="number" id="charge89" value="1200" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="charge905">90.5% (per gram):</label>
+                        <input type="number" id="charge905" value="1200" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="charge91">91% (per gram):</label>
+                        <input type="number" id="charge91" value="1200" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="charge92b">92% (No GST, per gram):</label>
+                        <input type="number" id="charge92b" value="1200" min="0">
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
