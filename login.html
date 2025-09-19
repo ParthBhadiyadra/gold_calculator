@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Milan Jewellers</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <h1>Milan Jewellers</h1>
+                <p>Please login to access the Gold Calculator</p>
+            </div>
+
+            <div id="error-message" class="error-message" style="display: none;"></div>
+
+            <form id="loginForm" class="login-form">
+                <div class="input-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <input type="text" id="username" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <input type="password" id="password" required>
+                </div>
+
+                <input type="submit" value="Login" class="btn-primary">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Static credentials
+        const STATIC_USERNAME = 'admin';
+        const STATIC_PASSWORD = 'milan123';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const errorMessage = document.getElementById('error-message');
+
+            // Check if already logged in
+            if (sessionStorage.getItem('isLoggedIn')) {
+                window.location.href = 'index.html';
+            }
+
+            loginForm.onsubmit = function(e) {
+                e.preventDefault();
+
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                // Hide previous error messages
+                errorMessage.style.display = 'none';
+
+                // Check credentials
+                if (username === STATIC_USERNAME && password === STATIC_PASSWORD) {
+                    // Set login session
+                    sessionStorage.setItem('isLoggedIn', 'true');
+
+                    // Show success notification
+                    showNotification('Login successful! Redirecting...', 'success');
+
+                    // Redirect to main application
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                } else {
+                    // Show error message
+                    errorMessage.textContent = 'Invalid username or password. Please try again.';
+                    errorMessage.style.display = 'block';
+
+                    // Clear password field
+                    document.getElementById('password').value = '';
+                }
+            };
+        });
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+                ${type === 'success' ? 'background: #2E8B57;' : 'background: #DC143C;'}
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in forwards';
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

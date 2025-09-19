@@ -1,5 +1,4 @@
-// Gold Price Calculator JS
-
+// Gold Price Calculator JS with modern enhancements
 const defaultCharges = {
     '92': 1200,
     '89': 1200,
@@ -8,135 +7,218 @@ const defaultCharges = {
     '92b': 1200 // 92% (No GST)
 };
 
-const MAKE_KEY = 'goldMakeName';
+// Store data in memory instead of localStorage for Claude.ai compatibility
+let charges = {...defaultCharges};
 
 function getCharges() {
-    let charges = localStorage.getItem('goldLablerCharges');
-    if (charges) {
-        try {
-            return JSON.parse(charges);
-        } catch {
-            return {...defaultCharges};
-        }
-    }
-    return {...defaultCharges};
+    return charges;
 }
 
-function saveCharges(charges) {
-    localStorage.setItem('goldLablerCharges', JSON.stringify(charges));
+function saveCharges(newCharges) {
+    charges = {...newCharges};
 }
 
 function formatINR(num) {
+    if (Number.isInteger(num)) {
+        return '₹' + num.toLocaleString('en-IN', {maximumFractionDigits: 0});
+    }
     return '₹' + num.toLocaleString('en-IN', {maximumFractionDigits: 2});
 }
 
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+        ${type === 'success' ? 'background: #2E8B57;' : 'background: #DC143C;'}
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-in forwards';
+        setTimeout(() => document.body.removeChild(notification), 300);
+    }, 3000);
+}
+
+// Check if user is logged in
+function checkLogin() {
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+    if (!isLoggedIn) {
+        window.location.href = 'login.html';
+    }
+}
+
+// Logout function
+function logout() {
+    sessionStorage.removeItem('isLoggedIn');
+    window.location.href = 'login.html';
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Check login status when page loads
+    checkLogin();
+
     const goldForm = document.getElementById('goldForm');
     const resultsDiv = document.getElementById('results');
     const configBtn = document.getElementById('configBtn');
     const configModal = document.getElementById('configModal');
     const closeModal = document.querySelector('.close');
     const configForm = document.getElementById('configForm');
-    const makeInput = document.getElementById('make');
-    const configMakeInput = document.getElementById('configMake');
+
+    // Add loading animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
 
     function loadChargesToModal() {
-        const charges = getCharges();
-        document.getElementById('charge92').value = charges['92'];
-        document.getElementById('charge89').value = charges['89'];
-        document.getElementById('charge905').value = charges['90.5'];
-        document.getElementById('charge91').value = charges['91'];
-        document.getElementById('charge92b').value = charges['92b'];
-    // load make
-    const savedMake = localStorage.getItem(MAKE_KEY) || 'Milan Jewellers';
-    configMakeInput.value = savedMake;
-    if (makeInput) makeInput.value = savedMake;
+        const currentCharges = getCharges();
+        document.getElementById('charge92').value = currentCharges['92'];
+        document.getElementById('charge89').value = currentCharges['89'];
+        document.getElementById('charge905').value = currentCharges['90.5'];
+        document.getElementById('charge91').value = currentCharges['91'];
+        document.getElementById('charge92b').value = currentCharges['92b'];
     }
 
     configBtn.onclick = function() {
         loadChargesToModal();
         configModal.style.display = 'block';
     };
+
     closeModal.onclick = function() {
         configModal.style.display = 'none';
     };
+
     window.onclick = function(event) {
-        if (event.target == configModal) configModal.style.display = 'none';
+        if (event.target == configModal) {
+            configModal.style.display = 'none';
+        }
     };
 
     configForm.onsubmit = function(e) {
         e.preventDefault();
-        const charges = {
+        const newCharges = {
             '92': Number(document.getElementById('charge92').value),
             '89': Number(document.getElementById('charge89').value),
             '90.5': Number(document.getElementById('charge905').value),
             '91': Number(document.getElementById('charge91').value),
             '92b': Number(document.getElementById('charge92b').value)
         };
-    const makeVal = String(document.getElementById('configMake').value || 'Milan Jewellers');
-    localStorage.setItem(MAKE_KEY, makeVal);
-    if (makeInput) makeInput.value = makeVal;
-        saveCharges(charges);
+        saveCharges(newCharges);
         configModal.style.display = 'none';
-        alert('Labler charges saved!');
+        showNotification('Labour charges saved successfully!');
     };
 
     goldForm.onsubmit = function(e) {
         e.preventDefault();
-    // save make from form input
-    if (makeInput) localStorage.setItem(MAKE_KEY, String(makeInput.value || 'Milan Jewellers'));
-        const goldRate = Number(document.getElementById('goldRate').value);
-        const weight = Number(document.getElementById('weight').value);
-        const goldType = document.getElementById('goldType').value;
-        const charges = getCharges();
-        let baseRate = goldRate;
-        let percentList = [
-            { label: '92%', percent: 0.92, chargeKey: '92' },
-            { label: '89%', percent: 0.89, chargeKey: '89' },
-            { label: '90.5%', percent: 0.905, chargeKey: '90.5' },
-            { label: '91%', percent: 0.91, chargeKey: '91' },
-            { label: '92% (No GST)', percent: 0.92, chargeKey: '92b', noGST: true }
-        ];
 
-    const makeName = localStorage.getItem(MAKE_KEY) || 'Milan Jewellers';
-    let html = `<div class="results-header"> <strong>Make:</strong> ${makeName}</div>`;
-    html += '<div class="results-wrapper"><table>';
-    html += '<tr><th>Type</th><th>Gold Value</th><th>Labler Charge</th><th>GST</th><th>Total</th></tr>';
+        // Add loading effect
+        const submitBtn = goldForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculating...';
+        submitBtn.disabled = true;
 
-        percentList.forEach(row => {
-            let rate = baseRate;
-            let percent = row.percent;
-            let label = row.label;
-            let charge = charges[row.chargeKey] || 0;
-            let gst = 0;
-            let goldValue = 0;
-            let total = 0;
+        setTimeout(() => {
+            const goldRate = Number(document.getElementById('goldRate').value);
+            const weight = Number(document.getElementById('weight').value);
+            const goldType = document.getElementById('goldType').value;
+            const currentCharges = getCharges();
 
-            if (goldType === 'old') {
-                rate = baseRate - 2000;
-                percent = 0.90;
-                label = '90% (Old Gold)';
-                charge = charges['90.5'] || 0;
-            }
+            let baseRate = goldRate;
+            let percentList = [
+                { label: '92% Gold', percent: 0.92, chargeKey: '92', icon: 'fas fa-star' },
+                { label: '91% Gold', percent: 0.91, chargeKey: '91', icon: 'fas fa-star' },
+                { label: '90.5% Gold', percent: 0.905, chargeKey: '90.5', icon: 'fas fa-star-half-alt' },
+                { label: '89% Gold', percent: 0.89, chargeKey: '89', icon: 'fas fa-star-half-alt' },
+                { label: '92% Gold (No GST)', percent: 0.92, chargeKey: '92b', noGST: true, icon: 'fas fa-certificate' }
+            ];
 
-            goldValue = (rate * percent * weight) / 10;
-            let lablerCharge = (charge * weight) / 10;
-            total = goldValue + lablerCharge;
-            if (!row.noGST) {
-                gst = total * 0.03;
-                total += gst;
-            }
+            let html = `
+                <div class="results-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-tag"></i> Type</th>
+                                <th><i class="fas fa-coins"></i> Gold Value</th>
+                                <th><i class="fas fa-tools"></i> Labour Charge</th>
+                                <th><i class="fas fa-receipt"></i> GST (3%)</th>
+                                <th><i class="fas fa-calculator"></i> Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
 
-            html += `<tr>
+            percentList.forEach(row => {
+                let rate = baseRate;
+                let percent = row.percent;
+                let label = row.label;
+                let charge = currentCharges[row.chargeKey] || 0;
+                let gst = 0;
+                let goldValue = 0;
+                let total = 0;
+
+                if (goldType === 'old') {
+                    rate = baseRate - 2000;
+                    percent = 0.90;
+                    label = '<i class="fas fa-recycle"></i> 90% (Old Gold)';
+                    charge = currentCharges['90.5'] || 0;
+                } else {
+                    label = `<i class="${row.icon}"></i> ${label}`;
+                }
+
+                goldValue = (rate * percent * weight) / 10;
+                let labourCharge = charge * weight;
+                total = goldValue + labourCharge;
+
+                if (!row.noGST) {
+                    gst = total * 0.03;
+                    total += gst;
+                }
+
+                const roundedTotal = Math.round(total);
+
+                html += `
+                    <tr>
                         <td>${label}</td>
                         <td>${formatINR(goldValue)}</td>
-                        <td>${formatINR(lablerCharge)}</td>
-                        <td>${row.noGST ? '-' : formatINR(gst)}</td>
-                        <td>${formatINR(total)}</td>
-                    </tr>`;
-        });
+                        <td>${formatINR(labourCharge)}</td>
+                        <td>${row.noGST ? '<span style="color: #999;">No GST</span>' : formatINR(gst)}</td>
+                        <td class="price-highlight">${formatINR(roundedTotal)}</td>
+                    </tr>
+                `;
+            });
 
-        html += '</table></div>';
-        resultsDiv.innerHTML = html;
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = html;
+
+            // Restore button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+
+            // Smooth scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        }, 500); // Small delay for better UX
     };
 });
