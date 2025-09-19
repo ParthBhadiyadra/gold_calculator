@@ -11,6 +11,18 @@ const defaultCharges = {
 let charges = {...defaultCharges};
 let calculationHistory = [];
 
+// Default percentage charges
+const defaultPercentages = {
+    '92': 15,
+    '89': 15,
+    '90.5': 15,
+    '91': 15,
+    '92b': 15
+};
+
+let percentages = {...defaultPercentages};
+let isPercentageBased = false; // false = fixed, true = percentage
+
 function getCharges() {
     return charges;
 }
@@ -96,18 +108,76 @@ function initializeTabs() {
 // Load charges to configuration tab
 function loadChargesToConfigTab() {
     const currentCharges = getCharges();
+    const currentPercentages = getPercentages();
+
+    // Load fixed charges
     document.getElementById('charge92').value = currentCharges['92'];
     document.getElementById('charge89').value = currentCharges['89'];
     document.getElementById('charge905').value = currentCharges['90.5'];
     document.getElementById('charge91').value = currentCharges['91'];
     document.getElementById('charge92b').value = currentCharges['92b'];
+
+    // Load percentage charges
+    document.getElementById('percent92').value = currentPercentages['92'];
+    document.getElementById('percent89').value = currentPercentages['89'];
+    document.getElementById('percent905').value = currentPercentages['90.5'];
+    document.getElementById('percent91').value = currentPercentages['91'];
+    document.getElementById('percent92b').value = currentPercentages['92b'];
+
+    // Set toggle state
+    document.getElementById('chargeTypeToggle').checked = isPercentageBased;
+    toggleChargeType();
+}
+
+// Get percentage charges
+function getPercentages() {
+    return percentages;
+}
+
+// Save percentage charges
+function savePercentages(newPercentages) {
+    percentages = {...newPercentages};
+}
+
+// Toggle between fixed and percentage charges
+function toggleChargeType() {
+    const toggle = document.getElementById('chargeTypeToggle');
+    const fixedSection = document.getElementById('fixed-charges');
+    const percentageSection = document.getElementById('percentage-charges');
+
+    isPercentageBased = toggle.checked;
+
+    if (isPercentageBased) {
+        fixedSection.style.display = 'none';
+        percentageSection.style.display = 'block';
+        percentageSection.classList.add('active');
+        fixedSection.classList.remove('active');
+    } else {
+        fixedSection.style.display = 'block';
+        percentageSection.style.display = 'none';
+        fixedSection.classList.add('active');
+        percentageSection.classList.remove('active');
+    }
+}
+
+// Calculate labour charge based on type
+function calculateLabourCharge(goldValue, weight, chargeKey) {
+    if (isPercentageBased) {
+        const percentage = percentages[chargeKey] || 0;
+        return (goldValue * percentage) / 100;
+    } else {
+        const fixedCharge = charges[chargeKey] || 0;
+        return fixedCharge * weight;
+    }
 }
 
 // Reset charges to default
 function resetCharges() {
     charges = {...defaultCharges};
+    percentages = {...defaultPercentages};
+    isPercentageBased = false;
     loadChargesToConfigTab();
-    showNotification('Charges reset to default values!');
+    showNotification('All charges reset to default values!');
 }
 
 // Add calculation to history
@@ -212,6 +282,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultsDiv = document.getElementById('results');
     const configForm = document.getElementById('configForm');
     const resetBtn = document.getElementById('resetBtn');
+    const chargeTypeToggle = document.getElementById('chargeTypeToggle');
+
+    // Initialize charge type toggle
+    if (chargeTypeToggle) {
+        chargeTypeToggle.addEventListener('change', toggleChargeType);
+        // Set initial state
+        toggleChargeType();
+    }
 
     // Add loading animation styles
     const style = document.createElement('style');
@@ -236,6 +314,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     configForm.onsubmit = function(e) {
         e.preventDefault();
+
+        // Save fixed charges
         const newCharges = {
             '92': Number(document.getElementById('charge92').value),
             '89': Number(document.getElementById('charge89').value),
@@ -244,8 +324,19 @@ document.addEventListener('DOMContentLoaded', function() {
             '92b': Number(document.getElementById('charge92b').value)
         };
         saveCharges(newCharges);
-        configModal.style.display = 'none';
-        showNotification('Labour charges saved successfully!');
+
+        // Save percentage charges
+        const newPercentages = {
+            '92': Number(document.getElementById('percent92').value),
+            '89': Number(document.getElementById('percent89').value),
+            '90.5': Number(document.getElementById('percent905').value),
+            '91': Number(document.getElementById('percent91').value),
+            '92b': Number(document.getElementById('percent92b').value)
+        };
+        savePercentages(newPercentages);
+
+        const chargeType = isPercentageBased ? 'percentage' : 'fixed';
+        showNotification(`Labour charges (${chargeType}) saved successfully!`);
     };
 
     goldForm.onsubmit = function(e) {
@@ -288,12 +379,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     rate = baseRate - 2000;
                     percent = 0.90;
                     label = '90% (Old Gold)';
-                    charge = currentCharges['90.5'] || 0;
+                    row.chargeKey = '90.5'; // Use 90.5% rates for old gold
                     icon = 'fas fa-recycle';
                 }
 
                 goldValue = (rate * percent * weight) / 10;
-                let labourCharge = charge * weight;
+                let labourCharge = calculateLabourCharge(goldValue, weight, row.chargeKey);
                 total = goldValue + labourCharge;
 
                 if (!row.noGST) {
@@ -364,7 +455,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const bestPrice = results.reduce((min, current) =>
                 current.total < min.total ? current : min
             );
-            showNotification(`Best price: ${formatINR(bestPrice.total)} (${bestPrice.label})`, 'success');
+            const chargeMethod = isPercentageBased ? 'Percentage' : 'Fixed';
+            showNotification(`Best price: ${formatINR(bestPrice.total)} (${bestPrice.label}) - ${chargeMethod} charges`, 'success');
 
             // Restore button
             submitBtn.innerHTML = originalText;

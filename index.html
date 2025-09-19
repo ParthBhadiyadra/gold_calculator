@@ -82,37 +82,94 @@
             <div id="configuration-tab" class="tab-content">
                 <h1><i class="fas fa-cog"></i> Labour Charges Configuration</h1>
 
+                <!-- Charge Type Toggle -->
+                <div class="charge-type-section">
+                    <div class="toggle-container">
+                        <label class="toggle-label">
+                            <i class="fas fa-money-bill-wave"></i> Labour Charge Type
+                        </label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="chargeTypeToggle" class="toggle-input">
+                            <label for="chargeTypeToggle" class="toggle-slider">
+                                <span class="toggle-text-left">Fixed (₹)</span>
+                                <span class="toggle-text-right">Percentage (%)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <form id="configForm">
-                    <div class="form-grid">
-                        <div class="input-group">
-                            <label for="charge92">
-                                <i class="fas fa-star"></i> 92% Gold (per gram)
-                            </label>
-                            <input type="number" id="charge92" value="1200" min="0">
+                    <!-- Fixed Price Configuration -->
+                    <div id="fixed-charges" class="charge-section">
+                        <h3><i class="fas fa-rupee-sign"></i> Fixed Charges (per gram)</h3>
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="charge92">
+                                    <i class="fas fa-star"></i> 92% Gold
+                                </label>
+                                <input type="number" id="charge92" value="1200" min="0" placeholder="₹ per gram">
+                            </div>
+                            <div class="input-group">
+                                <label for="charge91">
+                                    <i class="fas fa-star"></i> 91% Gold
+                                </label>
+                                <input type="number" id="charge91" value="1200" min="0" placeholder="₹ per gram">
+                            </div>
+                            <div class="input-group">
+                                <label for="charge905">
+                                    <i class="fas fa-star-half-alt"></i> 90.5% Gold
+                                </label>
+                                <input type="number" id="charge905" value="1200" min="0" placeholder="₹ per gram">
+                            </div>
+                            <div class="input-group">
+                                <label for="charge89">
+                                    <i class="fas fa-star-half-alt"></i> 89% Gold
+                                </label>
+                                <input type="number" id="charge89" value="1200" min="0" placeholder="₹ per gram">
+                            </div>
+                            <div class="input-group">
+                                <label for="charge92b">
+                                    <i class="fas fa-certificate"></i> 92% Gold - No GST
+                                </label>
+                                <input type="number" id="charge92b" value="1200" min="0" placeholder="₹ per gram">
+                            </div>
                         </div>
-                        <div class="input-group">
-                            <label for="charge91">
-                                <i class="fas fa-star"></i> 91% Gold (per gram)
-                            </label>
-                            <input type="number" id="charge91" value="1200" min="0">
-                        </div>
-                        <div class="input-group">
-                            <label for="charge905">
-                                <i class="fas fa-star-half-alt"></i> 90.5% Gold (per gram)
-                            </label>
-                            <input type="number" id="charge905" value="1200" min="0">
-                        </div>
-                        <div class="input-group">
-                            <label for="charge89">
-                                <i class="fas fa-star-half-alt"></i> 89% Gold (per gram)
-                            </label>
-                            <input type="number" id="charge89" value="1200" min="0">
-                        </div>
-                        <div class="input-group">
-                            <label for="charge92b">
-                                <i class="fas fa-certificate"></i> 92% Gold - No GST (per gram)
-                            </label>
-                            <input type="number" id="charge92b" value="1200" min="0">
+                    </div>
+
+                    <!-- Percentage Configuration -->
+                    <div id="percentage-charges" class="charge-section" style="display: none;">
+                        <h3><i class="fas fa-percentage"></i> Percentage Charges (% of gold value)</h3>
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="percent92">
+                                    <i class="fas fa-star"></i> 92% Gold
+                                </label>
+                                <input type="number" id="percent92" value="15" min="0" max="100" step="0.1" placeholder="% of gold value">
+                            </div>
+                            <div class="input-group">
+                                <label for="percent91">
+                                    <i class="fas fa-star"></i> 91% Gold
+                                </label>
+                                <input type="number" id="percent91" value="15" min="0" max="100" step="0.1" placeholder="% of gold value">
+                            </div>
+                            <div class="input-group">
+                                <label for="percent905">
+                                    <i class="fas fa-star-half-alt"></i> 90.5% Gold
+                                </label>
+                                <input type="number" id="percent905" value="15" min="0" max="100" step="0.1" placeholder="% of gold value">
+                            </div>
+                            <div class="input-group">
+                                <label for="percent89">
+                                    <i class="fas fa-star-half-alt"></i> 89% Gold
+                                </label>
+                                <input type="number" id="percent89" value="15" min="0" max="100" step="0.1" placeholder="% of gold value">
+                            </div>
+                            <div class="input-group">
+                                <label for="percent92b">
+                                    <i class="fas fa-certificate"></i> 92% Gold - No GST
+                                </label>
+                                <input type="number" id="percent92b" value="15" min="0" max="100" step="0.1" placeholder="% of gold value">
+                            </div>
                         </div>
                     </div>
 
