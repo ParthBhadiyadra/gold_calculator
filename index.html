@@ -20,47 +20,148 @@
             </button>
         </div>
 
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+            <button class="tab-button active" data-tab="calculator">
+                <i class="fas fa-calculator"></i> Calculator
+            </button>
+            <button class="tab-button" data-tab="configuration">
+                <i class="fas fa-cog"></i> Configuration
+            </button>
+            <button class="tab-button" data-tab="history">
+                <i class="fas fa-history"></i> History
+            </button>
+            <button class="tab-button" data-tab="about">
+                <i class="fas fa-info-circle"></i> About
+            </button>
+        </div>
+
         <div class="content">
-            <h1><i class="fas fa-calculator"></i> Gold Price Calculator</h1>
-            
-            <form id="goldForm">
-                <div class="form-grid">
-                    <div class="input-group">
-                        <label for="goldRate">
-                            <i class="fas fa-coins"></i> Gold Rate (24K, per 10g)
-                        </label>
-                        <input type="number" id="goldRate" value="113000" min="0" required>
+            <!-- Calculator Tab Content -->
+            <div id="calculator-tab" class="tab-content active">
+                <h1><i class="fas fa-calculator"></i> Gold Price Calculator</h1>
+
+                <form id="goldForm">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="goldRate">
+                                <i class="fas fa-coins"></i> Gold Rate (24K, per 10g)
+                            </label>
+                            <input type="number" id="goldRate" value="113000" min="0" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="weight">
+                                <i class="fas fa-weight"></i> Weight (grams)
+                            </label>
+                            <input type="number" id="weight" value="10" min="1" step="0.1" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="goldType">
+                                <i class="fas fa-star"></i> Gold Type
+                            </label>
+                            <select id="goldType">
+                                <option value="new">New Gold</option>
+                                <option value="old">Old Gold</option>
+                            </select>
+                        </div>
                     </div>
-                    
-                    <div class="input-group">
-                        <label for="weight">
-                            <i class="fas fa-weight"></i> Weight (grams)
-                        </label>
-                        <input type="number" id="weight" value="10" min="1" step="0.1" required>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-calculator"></i> Calculate Price
+                        </button>
                     </div>
-                    
-                    <div class="input-group">
-                        <label for="goldType">
-                            <i class="fas fa-star"></i> Gold Type
-                        </label>
-                        <select id="goldType">
-                            <option value="new">New Gold</option>
-                            <option value="old">Old Gold</option>
-                        </select>
+                </form>
+
+                <div id="results"></div>
+            </div>
+
+            <!-- Configuration Tab Content -->
+            <div id="configuration-tab" class="tab-content">
+                <h1><i class="fas fa-cog"></i> Labour Charges Configuration</h1>
+
+                <form id="configForm">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="charge92">
+                                <i class="fas fa-star"></i> 92% Gold (per gram)
+                            </label>
+                            <input type="number" id="charge92" value="1200" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="charge91">
+                                <i class="fas fa-star"></i> 91% Gold (per gram)
+                            </label>
+                            <input type="number" id="charge91" value="1200" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="charge905">
+                                <i class="fas fa-star-half-alt"></i> 90.5% Gold (per gram)
+                            </label>
+                            <input type="number" id="charge905" value="1200" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="charge89">
+                                <i class="fas fa-star-half-alt"></i> 89% Gold (per gram)
+                            </label>
+                            <input type="number" id="charge89" value="1200" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="charge92b">
+                                <i class="fas fa-certificate"></i> 92% Gold - No GST (per gram)
+                            </label>
+                            <input type="number" id="charge92b" value="1200" min="0">
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Save Configuration
+                        </button>
+                        <button type="button" id="resetBtn" class="btn-secondary">
+                            <i class="fas fa-undo"></i> Reset to Default
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- History Tab Content -->
+            <div id="history-tab" class="tab-content">
+                <h1><i class="fas fa-history"></i> Calculation History</h1>
+                <div id="history-list">
+                    <p class="no-history">No calculations yet. Start calculating to see your history!</p>
+                </div>
+            </div>
+
+            <!-- About Tab Content -->
+            <div id="about-tab" class="tab-content">
+                <h1><i class="fas fa-info-circle"></i> About Milan Jewellers</h1>
+                <div class="about-content">
+                    <div class="about-card">
+                        <h3><i class="fas fa-gem"></i> Our Legacy</h3>
+                        <p>Milan Jewellers has been serving customers with premium gold jewelry and transparent pricing for over two decades. We pride ourselves on quality craftsmanship and honest business practices.</p>
+                    </div>
+
+                    <div class="about-card">
+                        <h3><i class="fas fa-calculator"></i> Price Calculator</h3>
+                        <p>Our gold price calculator helps you get accurate pricing based on current market rates, including labour charges and applicable taxes. All prices are calculated transparently.</p>
+                    </div>
+
+                    <div class="about-card">
+                        <h3><i class="fas fa-shield-alt"></i> Quality Assurance</h3>
+                        <p>All our gold jewelry comes with proper hallmarking and quality certificates. We ensure 100% purity as per the selected gold type.</p>
+                    </div>
+
+                    <div class="about-card">
+                        <h3><i class="fas fa-phone"></i> Contact Information</h3>
+                        <p><strong>Address:</strong> Milan Jewellers, Main Market<br>
+                        <strong>Phone:</strong> +91 98765 43210<br>
+                        <strong>Email:</strong> info@milanjewellers.com</p>
                     </div>
                 </div>
-                
-                <div class="btn-group">
-                    <button type="button" id="configBtn" class="btn-secondary">
-                        <i class="fas fa-cog"></i> Configure Labour Charges
-                    </button>
-                    <button type="submit" class="btn-primary">
-                        <i class="fas fa-calculator"></i> Calculate Price
-                    </button>
-                </div>
-            </form>
-            
-            <div id="results"></div>
+            </div>
         </div>
     </div>
 

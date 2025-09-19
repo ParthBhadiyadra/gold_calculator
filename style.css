@@ -77,6 +77,148 @@ body {
     padding: 40px;
 }
 
+/* Tab Bar Styles */
+.tab-bar {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.tab-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-button {
+    flex: 1;
+    min-width: 120px;
+    padding: 15px 20px;
+    background: transparent;
+    border: none;
+    color: #8B4513;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.tab-button:hover {
+    background: rgba(255, 215, 0, 0.1);
+    color: #654321;
+}
+
+.tab-button.active {
+    background: rgba(255, 215, 0, 0.2);
+    border-bottom-color: #FFD700;
+    color: #654321;
+}
+
+.tab-button i {
+    margin-right: 8px;
+    font-size: 1rem;
+}
+
+/* Tab Content Styles */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* About Tab Styles */
+.about-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.about-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+}
+
+.about-card h3 {
+    color: #8B4513;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.about-card h3 i {
+    margin-right: 10px;
+    color: #FFD700;
+}
+
+.about-card p {
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* History Styles */
+.no-history {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 40px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+.history-item {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-left: 4px solid #FFD700;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.history-item .history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.history-item .history-time {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.history-item .history-details {
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.history-item .history-result {
+    font-weight: 700;
+    color: #2E8B57;
+    font-size: 1.1rem;
+}
+
 h1 {
     text-align: center;
     margin-bottom: 30px;
@@ -176,10 +318,125 @@ button:active {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
+/* Mobile table card layout */
+.mobile-table-card {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-table-card {
+        display: block;
+    }
+
+    .desktop-table {
+        display: none;
+    }
+
+    .calculation-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid #FFD700;
+    }
+
+    .calculation-card .card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .calculation-card .card-header i {
+        margin-right: 10px;
+        color: #FFD700;
+        font-size: 1.2rem;
+    }
+
+    .calculation-card .card-header h3 {
+        margin: 0;
+        color: #333;
+        font-size: 1.1rem;
+    }
+
+    .calculation-card .card-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .calculation-card .detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+    }
+
+    .calculation-card .detail-label {
+        color: #666;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .calculation-card .detail-value {
+        color: #333;
+        font-weight: 600;
+    }
+
+    .calculation-card .total-price {
+        text-align: center;
+        padding: 15px;
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+
+    .calculation-card .total-price .price-label {
+        color: #8B4513;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .calculation-card .total-price .price-value {
+        color: #8B4513;
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
     background: white;
+    font-size: 0.95rem;
+}
+
+/* Mobile responsive table */
+.table-container {
+    overflow-x: auto;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #FFD700;
+    border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #FFA500;
 }
 
 th {
@@ -380,8 +637,8 @@ tr:hover {
     }
 
     th, td {
-        padding: 12px 8px;
-        font-size: 0.9rem;
+        padding: 8px 4px;
+        font-size: 0.8rem;
     }
 
     .modal-content {
@@ -393,6 +650,30 @@ tr:hover {
     .login-box {
         margin: 20px;
         padding: 30px 20px;
+    }
+
+    .tab-button {
+        min-width: 100px;
+        padding: 12px 15px;
+        font-size: 0.8rem;
+    }
+
+    .tab-button i {
+        margin-right: 5px;
+        font-size: 0.9rem;
+    }
+
+    .about-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .about-card {
+        padding: 20px;
+    }
+
+    table {
+        min-width: 600px;
     }
 }
 
