@@ -451,6 +451,105 @@ document.addEventListener('DOMContentLoaded', function() {
 
             resultsDiv.innerHTML = html;
 
+            // Add Download PDF button
+            const downloadBtn = document.createElement('button');
+            downloadBtn.className = 'btn-primary';
+            downloadBtn.style.marginTop = '20px';
+            downloadBtn.textContent = 'Download Estimation (PDF)';
+            downloadBtn.onclick = function() {
+                // Programmatically build a clean table from 'results' (works reliably on mobile)
+                const goldRateVal = Number(document.getElementById('goldRate').value);
+                const weightVal = Number(document.getElementById('weight').value);
+                const goldTypeVal = document.getElementById('goldType').value === 'new' ? 'New Gold' : 'Old Gold';
+
+                let tableHtml = `
+                    <div style="text-align:center;margin-bottom:8px;">
+                        <h2 style="margin:0;">Gold Price Estimation</h2>
+                        <div style="font-size:0.95rem;color:#333;margin-top:6px;">Rate: ${formatINR(goldRateVal)}/10g &nbsp;|&nbsp; Weight: ${weightVal}g &nbsp;|&nbsp; Type: ${goldTypeVal}</div>
+                    </div>
+                    <table style="width:100%;border-collapse:collapse;margin-top:12px;font-family:inherit;">
+                        <thead>
+                            <tr style="background:#f7f7f7;">
+                                <th style="text-align:left;padding:8px;border:1px solid #eaeaea;">Type</th>
+                                <th style="text-align:right;padding:8px;border:1px solid #eaeaea;">Gold Value</th>
+                                <th style="text-align:right;padding:8px;border:1px solid #eaeaea;">Labour Charge</th>
+                                <th style="text-align:right;padding:8px;border:1px solid #eaeaea;">GST (3%)</th>
+                                <th style="text-align:right;padding:8px;border:1px solid #eaeaea;">Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                results.forEach(row => {
+                    tableHtml += `
+                        <tr>
+                            <td style="padding:8px;border:1px solid #eaeaea;">${row.label}</td>
+                            <td style="padding:8px;border:1px solid #eaeaea;text-align:right;">${formatINR(row.goldValue)}</td>
+                            <td style="padding:8px;border:1px solid #eaeaea;text-align:right;">${formatINR(row.labourCharge)}</td>
+                            <td style="padding:8px;border:1px solid #eaeaea;text-align:right;">${row.noGST ? 'No GST' : formatINR(row.gst)}</td>
+                            <td style="padding:8px;border:1px solid #eaeaea;text-align:right;font-weight:700;">${formatINR(row.total)}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHtml += `</tbody></table>`;
+
+                const tableContainer = document.createElement('div');
+                tableContainer.style.padding = '10px 14px';
+                tableContainer.innerHTML = tableHtml;
+
+                const opt = {
+                    margin:       10,
+                    filename:     `estimation_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                // Try to output blob and handle mobile vs desktop differently for better compatibility
+                if (typeof html2pdf === 'function') {
+                    try {
+                        const promise = html2pdf().set(opt).from(tableContainer).output('blob');
+                        if (promise && typeof promise.then === 'function') {
+                            promise.then(function(blob) {
+                                const filename = opt.filename;
+                                const url = URL.createObjectURL(blob);
+                                // Try programmatic download first
+                                try {
+                                    const link = document.createElement('a');
+                                    link.href = url;
+                                    link.download = filename;
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    link.remove();
+                                    setTimeout(() => URL.revokeObjectURL(url), 15000);
+                                } catch (e) {
+                                    // Fallback: open in new tab/window (useful on some mobile browsers)
+                                    window.open(url, '_blank');
+                                    setTimeout(() => URL.revokeObjectURL(url), 15000);
+                                }
+                            }).catch(function() {
+                                // Fallback to save()
+                                html2pdf().set(opt).from(tableContainer).save();
+                            });
+                        } else {
+                            // Fallback: directly save
+                            html2pdf().set(opt).from(tableContainer).save();
+                        }
+                    } catch (err) {
+                        html2pdf().set(opt).from(tableContainer).save();
+                    }
+                } else {
+                    showNotification('PDF export library not loaded', 'error');
+                }
+            };
+
+            // Remove existing pdf button if any and append
+            const existingPdfBtn = document.getElementById('download-pdf-btn');
+            if (existingPdfBtn) existingPdfBtn.remove();
+            downloadBtn.id = 'download-pdf-btn';
+            resultsDiv.appendChild(downloadBtn);
+
             // Show best price notification
             const bestPrice = results.reduce((min, current) =>
                 current.total < min.total ? current : min
