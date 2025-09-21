@@ -46,13 +46,29 @@ body {
     50% { transform: translateX(100px) translateY(100px); }
 }
 
-.logo {
-    font-size: 3rem;
-    color: #8B4513;
-    margin-bottom: 10px;
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 15px;
     position: relative;
     z-index: 2;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.brand-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.brand-logo:hover {
+    transform: scale(1.05);
 }
 
 .store-name {
@@ -86,6 +102,11 @@ body {
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    padding: 0 10px;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    gap: 5px;
 }
 
 .tab-bar::-webkit-scrollbar {
@@ -93,20 +114,21 @@ body {
 }
 
 .tab-button {
-    flex: 1;
-    min-width: 120px;
-    padding: 15px 20px;
+    flex: 0 0 auto;
+    min-width: auto;
+    padding: 12px 15px;
     background: transparent;
     border: none;
     color: #8B4513;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.3s ease;
     border-bottom: 3px solid transparent;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
+    margin: 0;
 }
 
 .tab-button:hover {
@@ -121,13 +143,26 @@ body {
 }
 
 .tab-button i {
-    margin-right: 8px;
-    font-size: 1rem;
+    margin-right: 6px;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 380px) {
+    .tab-button {
+        padding: 10px;
+        font-size: 0.75rem;
+    }
+    
+    .tab-button i {
+        margin-right: 4px;
+        font-size: 0.8rem;
+    }
 }
 
 /* Tab Content Styles */
 .tab-content {
     display: none;
+    padding-top: 20px;
 }
 
 .tab-content.active {
@@ -272,30 +307,184 @@ body {
     padding: 25px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 215, 0, 0.2);
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .about-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
 }
 
 .about-card h3 {
     color: #8B4513;
-    margin-bottom: 15px;
-    font-size: 1.2rem;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
     display: flex;
     align-items: center;
+    gap: 12px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 215, 0, 0.3);
 }
 
 .about-card h3 i {
-    margin-right: 10px;
     color: #FFD700;
+    font-size: 1.4rem;
 }
 
-.about-card p {
-    color: #555;
-    line-height: 1.6;
-    margin: 0;
+/* Shop List Styles */
+.shop-list {
+    display: grid;
+    gap: 15px;
+}
+
+.shop-item {
+    background: rgba(255, 215, 0, 0.1);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.shop-item:hover {
+    background: rgba(255, 215, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+.shop-item .shop-logo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.shop-item:hover .shop-logo {
+    transform: scale(1.05);
+}
+
+.shop-item h4 {
+    color: #8B4513;
+    margin: 10px 0 5px;
+    font-size: 1.1rem;
+}
+
+.shop-item p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Address Styles */
+.address-content {
+    text-align: center;
+}
+
+.address-text {
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.address-detail {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.map-btn {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #8B4513;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.map-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+.map-btn i {
+    font-size: 1.1rem;
+}
+
+/* Contact Numbers Styles */
+.contact-list {
+    display: grid;
+    gap: 12px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.contact-item:hover {
+    background: rgba(255, 215, 0, 0.2);
+    transform: translateX(5px);
+}
+
+.contact-item i {
+    color: #25D366;
+    font-size: 1.3rem;
+}
+
+.contact-item a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.05rem;
+}
+
+/* Email Styles */
+.email-content {
+    text-align: center;
+    padding: 10px;
+}
+
+.email-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #333;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 15px 25px;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.email-link:hover {
+    background: rgba(255, 215, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.email-link i {
+    color: #FFD700;
+    font-size: 1.2rem;
+}
+
+.response-time {
+    color: #666;
+    font-size: 0.9rem;
+    font-style: italic;
 }
 
 /* History Styles */
@@ -731,11 +920,33 @@ tr:hover {
 }
 
 .header {
-    padding: 20px;
+    padding: 20px 20px 30px 20px;
+    position: relative;
 }
 
-.logo {
-    font-size: 2.5rem;
+.logo-container {
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 40px; /* Space for logout button */
+}
+
+.brand-logo {
+    width: 80px;
+    height: 80px;
+}
+
+.shop-item .shop-logo {
+    width: 100px;
+    height: 100px;
+}
+
+/* Mobile logout button */
+.header button {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    font-size: 0.8rem !important;
+    padding: 6px 12px !important;
 }
 
 .store-name {
@@ -838,8 +1049,45 @@ button {
         padding: 30px;
     }
 
-    .logo {
-        font-size: 3rem;
+    .logo-container {
+        flex-direction: row;
+        gap: 25px;
+        margin-top: 0; /* Reset mobile margin */
+    }
+
+    .brand-logo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .shop-item .shop-logo {
+        width: 120px;
+        height: 120px;
+    }
+
+    /* Reset desktop tab styles */
+    .tab-bar {
+        padding: 0;
+        justify-content: center;
+    }
+
+    .tab-button {
+        flex: 1;
+        padding: 15px 20px;
+        font-size: 0.9rem;
+    }
+
+    .tab-button i {
+        margin-right: 8px;
+        font-size: 1rem;
+    }
+
+    /* Reset desktop header button */
+    .header button {
+        top: 20px !important;
+        right: 20px !important;
+        font-size: 0.9rem !important;
+        padding: 8px 15px !important;
     }
 
     .store-name {
